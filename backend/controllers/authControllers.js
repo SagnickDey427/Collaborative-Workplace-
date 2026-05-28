@@ -1,6 +1,7 @@
 import User from '../models/UserSchema.js';
 import bcrypt from "bcryptjs";
 import validator from "validator";
+import generateTokenAndSetCookie from '../Utils/genToken.js';
 
 
 
@@ -62,4 +63,40 @@ const  registerController = async (req,res)=>{
     }
 }
 
-export default registerController;
+
+const loginController = async (req,res)=>{
+    try{
+        const {username,email,password} = req.body;
+        //Check if user exists 
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(400).json({success:false,message:"Invalid email or password."});
+        }
+        //Check if password is correct
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) { 
+            return res.status(400).json({ success: false, message: "Invalid email or password." });
+        }
+
+        //Generate the token
+        generateTokenAndSetCookie(user._id, res);
+        return res.status(200).json({
+            success: true,
+            message: "Logged in successfully!",
+            data: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePicUrl: user.userProfileUrl
+            }
+        });
+    } catch(err){
+        console.error("Login Error: ", error);
+        return res.status(500).json({
+            success:false,
+            message:`Server error : ${err}`
+        })
+    }
+}
+
+export  {registerController, loginController};

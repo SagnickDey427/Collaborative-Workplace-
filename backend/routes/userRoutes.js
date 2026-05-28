@@ -1,12 +1,10 @@
 import express from "express" ;
-import  registerController  from '../controllers/authControllers.js';
+import  {registerController, loginController}  from '../controllers/authControllers.js';
 const router = express.Router();
 
 router.post('/register',registerController)
 
-router.post('/login',async (req,res)=>{
-    res.send("This is login route.");
-})
+router.post('/login',loginController)
 
 router.post('/logout',async (req,res)=>{
     res.send("This is log-out route.");

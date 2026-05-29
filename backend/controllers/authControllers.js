@@ -99,4 +99,20 @@ const loginController = async (req,res)=>{
     }
 }
 
-export  {registerController, loginController};
+
+const getMe = async(req,res)=>{
+    try{
+        return res.status(200).json({
+            success:true,
+            data:req.user
+        });
+    } catch(err){
+        console.log(`Error in /me route :${err}`);
+        return res.status(500).json({
+            success:false,
+            message:`Server error: ${err}`
+        });
+    }
+}
+
+export  {registerController, loginController,getMe};

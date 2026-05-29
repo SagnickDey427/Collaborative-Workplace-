@@ -1,5 +1,6 @@
 import express from "express" ;
-import  {registerController, loginController}  from '../controllers/authControllers.js';
+import  {registerController, loginController, getMe}  from '../controllers/authControllers.js';
+import protectRoute from "../middlewares/protectRoute.js";
 const router = express.Router();
 
 router.post('/register',registerController)
@@ -10,8 +11,6 @@ router.post('/logout',async (req,res)=>{
     res.send("This is log-out route.");
 })
 
-router.get('/me',async (req,res)=>{
-    res.send("This is verify user route");
-})
+router.get('/me',protectRoute, getMe)
 
 export default router;
